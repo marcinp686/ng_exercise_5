@@ -1,0 +1,68 @@
+<!-- Category selection -->
+<ng-container *ngIf="(categories | async)?.length; else empty">
+  <mat-card>
+    <mat-card-title>Categories</mat-card-title>
+    <mat-card-content>
+    <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex;">
+      <mat-list-option role="option" *ngFor="let category of categories | async" [value]="category.name" [routerLink]="'/products/'+category.name">
+        {{category.name}}
+      </mat-list-option>  
+    </mat-selection-list>
+  </mat-card-content>
+  </mat-card>
+</ng-container>
+
+<!-- Filtered product list -->
+<div class="product-table-component">
+  <mat-card>
+    <mat-card-title>Product list</mat-card-title>
+    <mat-card-content>
+      <div class="product-table mat-elevation-z8">
+        <ng-container *ngIf="(products | async)?.length; else empty">
+          <table mat-table [dataSource]="products" class="product-table">
+            <!-- Image Column -->
+            <ng-container matColumnDef="productImage">
+              <th mat-header-cell *matHeaderCellDef> Image </th>
+              <td mat-cell *matCellDef="let product"> <img [src]="product.image"> </td>
+            </ng-container>
+            <!-- Title Column -->
+            <ng-container matColumnDef="productTitle">
+              <th mat-header-cell *matHeaderCellDef> Title </th>
+              <td mat-cell *matCellDef="let product"> {{product.title}} </td>
+            </ng-container>
+            <!-- Category Column -->
+            <ng-container matColumnDef="productCategory">
+              <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Category </th>
+              <td mat-cell *matCellDef="let product"> {{ product.category }} </td>
+            </ng-container>
+            <!-- Price Column -->
+            <ng-container matColumnDef="productPrice">
+              <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Price </th>
+              <td mat-cell *matCellDef="let product"> ${{product.price}}</td>
+            </ng-container>        
+            <!-- Table data -->
+            <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+          </table>
+          <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>       -->
+        </ng-container>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+<!-- Templates -->
+<ng-template #selectCategoryInfo>
+  <mat-card>
+    <mat-card-content>      
+      Select category
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+<ng-template #empty>
+  <mat-card>
+    <mat-card-content>      
+      Loading...
+    </mat-card-content>
+  </mat-card>
+</ng-template>
