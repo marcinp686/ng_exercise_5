@@ -4,11 +4,13 @@ import { EmployeesTableComponent } from './components/employees-table/employees-
 import { ProductsFilteredByRouteComponent } from './components/products-filtered-by-route/products-filtered-by-route.component';
 import { ProductsFilteredBySubjectComponent } from './components/products-filtered-by-subject/products-filtered-by-subject.component';
 import { ProductsSortedComponent } from './components/products-sorted/products-sorted.component';
+import { BeersListComponent } from './components/beers-list/beers-list.component';
 
 @NgModule({
   imports: [RouterModule.forRoot([
     { path: 'employees', component: EmployeesTableComponent },  
     { path: 'products', component: ProductsSortedComponent },
+    { path: 'beers-with-pagination', component: BeersListComponent },    
     //  { path: 'products', component: ProductsFilteredBySubjectComponent },
   //  { path: 'products/:category', component: ProductsFilteredByRouteComponent }
   ])],

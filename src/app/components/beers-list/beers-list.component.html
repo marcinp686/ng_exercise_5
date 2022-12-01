@@ -1,0 +1,4 @@
+<mat-list>
+  <mat-list-item *ngFor="let beer of beers | async">{{beer.name}}</mat-list-item>
+</mat-list>
+<mat-paginator [length]="100" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5,10,15]" (page)="onPaginatorChange($event)"></mat-paginator>
