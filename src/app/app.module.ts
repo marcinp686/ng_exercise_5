@@ -12,12 +12,14 @@ import { MatTableModule } from '@angular/material/table'
 
 import { ProductsFilteredByRouteComponent } from './components/products-filtered-by-route/products-filtered-by-route.component';
 import { ProductsFilteredBySubjectComponent } from './components/products-filtered-by-subject/products-filtered-by-subject.component';
+import { ProductsSortedComponent } from './components/products-sorted/products-sorted.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductsFilteredByRouteComponent,
-    ProductsFilteredBySubjectComponent
+    ProductsFilteredBySubjectComponent,
+    ProductsSortedComponent
   ],
   imports: [
     BrowserModule,
