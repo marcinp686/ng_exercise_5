@@ -15,7 +15,7 @@ export class ProductsSortedComponent implements OnInit {
   
   sortingOrderSubject: BehaviorSubject<string> = new BehaviorSubject('asc');
   
-  displayColumns : string[] = ['productImage','productTitle','productCategory','productPrice'];
+  displayColumns : string[] = ['productImage','productTitle','productCategory','productPrice','actions'];
 
   sortingOrders: Observable<Array<string>> = of(['asc','desc']);
 
@@ -38,5 +38,11 @@ export class ProductsSortedComponent implements OnInit {
 
   onSort(order: string) : void {
     this.sortingOrderSubject.next(order);
+  }
+
+  deleteProduct(id: number) : void {
+    this.fakestore.deleteProduct(id).subscribe({
+      complete: ()=>alert("deleted")
+    });
   }
 }

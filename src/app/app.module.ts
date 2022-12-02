@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select'
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table'
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
 
 import { ProductsSortedComponent } from './components/products-sorted/products-sorted.component';
 import { EmployeesTableComponent } from './components/employees-table/employees-table.component';
@@ -30,7 +31,8 @@ import { EmployeesTableComponent } from './components/employees-table/employees-
     MatListModule,
     MatTableModule,
     MatPaginatorModule,
-    FormsModule
+    FormsModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

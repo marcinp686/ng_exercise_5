@@ -15,7 +15,7 @@ export class FakestoreService {
 
   constructor(private http: HttpClient) { }
 
-  // Products data
+  // Products data --------------------
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.productsUrl+'/products');
   }
@@ -28,7 +28,11 @@ export class FakestoreService {
     return this.http.post(this.productsUrl, product);
   }
 
-  // User data
+  deleteProduct(id: number) : Observable<any> {
+    return this.http.delete(this.productsUrl+`/products/${id}`)
+  }
+
+  // User data --------------------
   getUser(id: number) : Observable<User> {
     return this.http.get<User>(this.productsUrl+`/users/${id}`);
   }
@@ -41,14 +45,14 @@ export class FakestoreService {
     return this.http.post(this.productsUrl+'/auth/login', user);
   }
 
-  // Categories data
+  // Categories data --------------------
   getCategories(): Observable<Category[]> {
     return this.http.get<string[]>(this.productsUrl+'/products/categories')
       .pipe(map( (categories: string[]) => categories.map(
         (category: string) => {const res: Category = { name: category }; return res;})))
   }
 
-  // Cart data
+  // Cart data --------------------
   getCart(id: number) : Observable<Cart> {
     return this.http.get<Cart>(this.productsUrl+`/carts/${id}`);
   }
