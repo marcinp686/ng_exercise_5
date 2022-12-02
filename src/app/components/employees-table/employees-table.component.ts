@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { Employee } from 'src/app/models/employee.model';
-import { RestApiExampleResponse } from 'src/app/models/restApiExampleResponse.model';
 import { EmployeeService } from 'src/app/services/restapiexample.service';
 
 interface AgeFilter {
@@ -41,6 +39,8 @@ export class EmployeesTableComponent implements OnInit {
   selectedSorting     : BehaviorSubject<SortOrder> = new BehaviorSubject(this.sortingOrders[0]);
   filteredEmployees!  : Observable<Employee[]>;
   sortedEmployees!    : Observable<Employee[]>;
+  filterSelectionList : string[] = [this.ageFilters[0].desc]
+  sortSelectionList   : string[] = [this.sortingOrders[0].order];
 
   displayColumns : string[] = ['employeeId','employeeName','employeeSalary','employeeAge','employeeImage'];
 
@@ -48,27 +48,26 @@ export class EmployeesTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.filteredEmployees = combineLatest( [this.restApi.getEmployees(), this.selectedFilter] )
-                  .pipe( map( ([response, filter] : [RestApiExampleResponse<Employee[]> , AgeFilter]) => {
-                      return response.data.filter( (employee: Employee) =>
-                        { return employee.employee_age>=filter.min && employee.employee_age<=filter.max  } )}));
+                  .pipe( map( ([response, filter] : [Employee[] , AgeFilter]) => {
+                      return response.filter( (employee: Employee) => {
+                        return employee.employee_age>=filter.min && employee.employee_age<=filter.max  } )}));
 
     this.sortedEmployees = combineLatest( [this.filteredEmployees, this.selectedSorting] )
                   .pipe( map( ([employee, order] : [Employee[], SortOrder]) => {
-                      return employee.sort( this.sortEmployeesFunc(order))
-                        }))
-                        
+                      return employee.sort( this.sortEmployeesFunc(order) ) }))       
   }
 
   onAgeFilterChange(filter: AgeFilter) : void {
     this.selectedFilter.next(filter);
   }
 
+  
   private sortEmployeesFunc(order: SortOrder): ((a: Employee, b: Employee) => number) | undefined {
     return (a, b) => {
       if (a.employee_salary > b.employee_salary)
         return order.order === 'asc' ? 1 : -1;
-      if (a.employee_salary > b.employee_salary)
-        return order.order === 'desc' ? -1 : 1;
+      if (a.employee_salary < b.employee_salary)
+        return order.order === 'desc' ? 1 : -1;
       return 0;
     };
   }
