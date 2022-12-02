@@ -2,8 +2,8 @@
 <mat-card>
   <mat-card-title>Filter by age</mat-card-title>
   <mat-card-content>
-  <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex;">
-    <mat-list-option role="option" *ngFor="let filter of ageFilters" (click)="onAgeFilterChange(filter)">
+  <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex;" [(ngModel)]="filterSelectionList">
+    <mat-list-option role="option" *ngFor="let filter of ageFilters" (click)="onAgeFilterChange(filter)" [value]="filter.desc">
       {{filter.desc}}
     </mat-list-option>  
   </mat-selection-list>
@@ -13,11 +13,10 @@
 <!-- Sort selection -->
 <mat-card>
   <mat-card-title>Sort by salary</mat-card-title>
-  <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex">
-    <mat-list-option role="option" *ngFor="let order of sortingOrders" (click)="onSortingOrderChange(order)">{{ order.description }}</mat-list-option>
+  <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex" [(ngModel)]="sortSelectionList">
+    <mat-list-option role="option" *ngFor="let order of sortingOrders" (click)="onSortingOrderChange(order)" [value]="order.order">{{ order.description }}</mat-list-option>
   </mat-selection-list>
 </mat-card>
-
 
 <!-- Filtered and sortef employee list -->
 <div class="employee-table-component">
@@ -30,31 +29,31 @@
             <!-- Id Column -->
             <ng-container matColumnDef="employeeId">
               <th mat-header-cell *matHeaderCellDef> Id </th>
-              <td mat-cell *matCellDef="let employee"> {{employee.Id}} </td>
+              <td mat-cell *matCellDef="let employee"> {{employee.id}} </td>
             </ng-container>
             <!-- Name Column -->
             <ng-container matColumnDef="employeeName">
               <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let employee"> {{employee.employeeName}} </td>
+              <td mat-cell *matCellDef="let employee"> {{employee.employee_name}} </td>
             </ng-container>
             <!-- Salary Column -->
             <ng-container matColumnDef="employeeSalary">
               <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Salary </th>
-              <td mat-cell *matCellDef="let employee"> {{ employee.employeeSalary }} </td>
+              <td mat-cell *matCellDef="let employee"> {{ employee.employee_salary }} </td>
             </ng-container>
             <!-- Age Column -->
             <ng-container matColumnDef="employeeAge">
               <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Age </th>
-              <td mat-cell *matCellDef="let employee"> {{ employee.employeeAge }} </td>
+              <td mat-cell *matCellDef="let employee"> {{ employee.employee_age }} </td>
             </ng-container>
             <!-- Image Column -->
             <ng-container matColumnDef="employeeImage">
               <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Image </th>
-              <td mat-cell *matCellDef="let employee"> <img [src]="employee.employeeImage">></td>
+              <td mat-cell *matCellDef="let employee"> <img [src]="employee.employee_image"></td>
             </ng-container>        
             <!-- Table data -->
             <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
           </table>          
         </ng-container>
       </div>
@@ -62,11 +61,10 @@
   </mat-card>
 
 <!-- Templates -->
-
 <ng-template #empty>
   <mat-card>
     <mat-card-content>      
-      Loading...
+      No data
     </mat-card-content>
   </mat-card>
 </ng-template>
