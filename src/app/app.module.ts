@@ -11,20 +11,14 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table'
 import { MatPaginatorModule } from '@angular/material/paginator';
 
-import { ProductsFilteredByRouteComponent } from './components/products-filtered-by-route/products-filtered-by-route.component';
-import { ProductsFilteredBySubjectComponent } from './components/products-filtered-by-subject/products-filtered-by-subject.component';
 import { ProductsSortedComponent } from './components/products-sorted/products-sorted.component';
 import { EmployeesTableComponent } from './components/employees-table/employees-table.component';
-import { BeersListComponent } from './components/beers-list/beers-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProductsFilteredByRouteComponent,
-    ProductsFilteredBySubjectComponent,
     ProductsSortedComponent,
-    EmployeesTableComponent,
-    BeersListComponent
+    EmployeesTableComponent
   ],
   imports: [
     BrowserModule,
