@@ -53,7 +53,7 @@ export class EmployeesTableComponent implements OnInit {
         shareReplay()
       )       
   }
-;
+
   onAgeFilterChange(filter: AgeFilter) : void {
     this.selectedFilter.next(filter);
   }
