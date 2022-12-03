@@ -2,17 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { Employee } from 'src/app/models/employee.model';
 import { EmployeeService } from 'src/app/services/restapiexample.service';
-
-interface AgeFilter {
-  desc:   string;
-  min:    number;
-  max:    number;
-}
-
-interface SortOrder {
-  description: string;
-  order:       string;
-}
+import { SortOrder } from 'src/app/models/sort-order.model'
+import { AgeFilter } from 'src/app/models/age-filter.model';
 
 @Component({
   selector: 'app-employees-table',
