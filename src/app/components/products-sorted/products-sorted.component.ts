@@ -1,48 +1,65 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, of } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { Product } from 'src/app/models/product.model';
 import { FakestoreService } from 'src/app/services/fakestore.service';
+import { SortOrder } from 'src/app/models/sort-order.model';
 
 @Component({
   selector: 'app-products-sorted',
   templateUrl: './products-sorted.component.html',
-  styleUrls: ['./products-sorted.component.scss']
+  styleUrls: ['./products-sorted.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductsSortedComponent implements OnInit {
 
-  productsSorted!:    Observable<Product[]>;
+  sortingOrders       :  Array<SortOrder> = [
+    {description: 'Ascending', order: 'asc'},
+    {description: 'Descending', order: 'desc'}
+  ];
   
-  sortingOrderSubject: BehaviorSubject<string> = new BehaviorSubject('asc');
-  
-  displayColumns : string[] = ['productImage','productTitle','productCategory','productPrice','actions'];
+  sortSelectionList   : Array<SortOrder> = [this.sortingOrders[0]];  
 
-  sortingOrders: Observable<Array<string>> = of(['asc','desc']);
+  productsSorted!     : Observable<Product[]>;
+  sortingOrderSubject : BehaviorSubject<SortOrder> = new BehaviorSubject(this.sortingOrders[0]);  
+  refresher           : BehaviorSubject<void> = new BehaviorSubject<void>(void 0);
 
-  constructor(private fakestore: FakestoreService, private route: ActivatedRoute) {}
+  displayColumns      : string[] = ['productImage', 'productTitle', 'productCategory', 'productPrice', 'actions'];
+
+  constructor(private fakestore: FakestoreService) { }
 
   ngOnInit(): void {
-    this.productsSorted = combineLatest([this.fakestore.getProducts(), this.sortingOrderSubject])
-                      .pipe( map( ([products, order]:[Product[], string]) =>  { return products.sort( this.sortProductsByPriceFunc(order) ) } ));
+    this.productsSorted = this.refresher.pipe(
+      switchMap(() =>
+        combineLatest([
+          this.fakestore.getProducts(),
+          this.sortingOrderSubject,
+        ]).pipe(
+          map(([products, order]: [Product[], SortOrder]) => {
+            return products.sort(this.sortProductsByPriceFunc(order));
+          })
+        )
+      ),
+      shareReplay()
+    );
   }
 
-  private sortProductsByPriceFunc(order: string): ((a: Product, b: Product) => number) | undefined {
+  private sortProductsByPriceFunc(order: SortOrder): ((a: Product, b: Product) => number) | undefined {
     return (a, b) => {
       if (a.price > b.price)
-        return order === 'asc' ? 1 : -1;
+        return order.order === 'asc' ? 1 : -1;
       if (a.price < b.price)
-        return order === 'desc' ? 1 : -1;
+        return order.order === 'desc' ? 1 : -1;
       return 0;
     };
   }
 
-  onSort(order: string) : void {
+  onSort(order: SortOrder): void {
     this.sortingOrderSubject.next(order);
   }
 
-  deleteProduct(id: number) : void {
+  deleteProduct(id: number): void {
     this.fakestore.deleteProduct(id).subscribe({
-      complete: ()=>alert("deleted")
+      complete: () => this.refresher.next()
     });
   }
 }

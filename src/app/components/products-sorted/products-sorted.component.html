@@ -1,9 +1,9 @@
 <!-- Sorting selection -->
 <mat-card>
   <mat-card-content>
-    <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex">
-      <mat-list-option role="option" *ngFor="let order of sortingOrders | async" [value]="order" (click)="onSort(order)">
-        {{order}}
+    <mat-selection-list fxLayout="row" role="list" [multiple]="false" style="display: flex" [(ngModel)]="sortSelectionList">
+      <mat-list-option role="option" *ngFor="let order of sortingOrders" [value]="order" (click)="onSort(order)" [value]="order">
+        {{order.description}}
       </mat-list-option>
     </mat-selection-list>
   </mat-card-content>
