@@ -5,7 +5,7 @@ import { ProductsSortedComponent } from './components/products-sorted/products-s
 
 @NgModule({
   imports: [RouterModule.forRoot([
-    { path: 'employees', component: EmployeesTableComponent },
+    { path: 'refresh-employees', component: EmployeesTableComponent },
     { path: 'refresh-products', component: ProductsSortedComponent }
   ])],
   exports: [RouterModule]

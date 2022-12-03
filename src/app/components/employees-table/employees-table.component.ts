@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { Employee } from 'src/app/models/employee.model';
 import { EmployeeService } from 'src/app/services/restapiexample.service';
 import { SortOrder } from 'src/app/models/sort-order.model'
@@ -32,20 +32,26 @@ export class EmployeesTableComponent implements OnInit {
   sortedEmployees!    : Observable<Employee[]>;
   filterSelectionList : string[] = [this.ageFilters[0].desc]
   sortSelectionList   : string[] = [this.sortingOrders[0].order];
+  refresher           : BehaviorSubject<void> = new BehaviorSubject<void>(void 0);
 
-  displayColumns : string[] = ['employeeId','employeeName','employeeSalary','employeeAge','employeeImage'];
+  displayColumns : string[] = ['employeeId','employeeName','employeeSalary','employeeAge','employeeImage','employeeActions'];
 
   constructor(private restApi: EmployeeService) { }
 
   ngOnInit(): void {
-    this.filteredEmployees = combineLatest( [this.restApi.getEmployees(), this.selectedFilter] )
-                  .pipe( map( ([response, filter] : [Employee[] , AgeFilter]) => {
-                      return response.filter( (employee: Employee) => {
-                        return employee.employee_age>=filter.min && employee.employee_age<=filter.max  } )}));
+    this.filteredEmployees = this.refresher.pipe(switchMap(() => combineLatest([this.restApi.getEmployees(), this.selectedFilter])
+      .pipe(map(([response, filter]: [Employee[], AgeFilter]) => {
+        return response.filter((employee: Employee) => {
+          return employee.employee_age >= filter.min && employee.employee_age <= filter.max
+        })
+      }))));
 
-    this.sortedEmployees = combineLatest( [this.filteredEmployees, this.selectedSorting] )
-                  .pipe( map( ([employee, order] : [Employee[], SortOrder]) => {
-                      return employee.sort( this.sortEmployeesFunc(order) ) }))       
+    this.sortedEmployees = combineLatest([this.filteredEmployees, this.selectedSorting])
+      .pipe(map(([employee, order]: [Employee[], SortOrder]) => {
+        return employee.sort(this.sortEmployeesFunc(order))
+      }),
+        shareReplay()
+      )       
   }
 
   onAgeFilterChange(filter: AgeFilter) : void {
@@ -65,5 +71,13 @@ export class EmployeesTableComponent implements OnInit {
 
   onSortingOrderChange(order: SortOrder) : void {
     this.selectedSorting.next(order);
+  }
+
+  deleteEmployee(id: number) : void {
+    this.restApi.deleteEmployee(id).subscribe(
+      {
+        complete: () => this.refresher.next()
+      }
+    );
   }
 }
